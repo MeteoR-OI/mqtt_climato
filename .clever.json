@@ -1,12 +1,12 @@
 {
   "apps": [
     {
-      "app_id": "app_8c7d5636-3bab-4004-b6fb-511ac21da716",
-      "org_id": "user_930dae8b-7bfc-4fef-af38-cc89ebde7f4b",
+      "app_id": "",
+      "org_id": "orga_3fec1295-2308-4a56-abc0-e07405b62eb6",
       "deploy_url": "https://push-n3-par-clevercloud-customers.services.clever-cloud.com/app_8c7d5636-3bab-4004-b6fb-511ac21da716.git",
       "git_ssh_url": "git+ssh://git@push-n3-par-clevercloud-customers.services.clever-cloud.com/app_8c7d5636-3bab-4004-b6fb-511ac21da716.git",
-      "name": "mqtt-climato",
-      "alias": "mqtt-climato"
+      "name": "bd_climato::MQTT",
+      "alias": "bd_climato::MQTT"
     }
   ]
 }
