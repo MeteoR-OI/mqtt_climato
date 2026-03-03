@@ -165,6 +165,47 @@ The password file is regenerated on each startup from this variable.
 | `climato/{station_id}/data` | Station -> Broker | Station publishes sensor readings |
 | `climato/#` | Broker -> Backend | Backend subscribes to all station data |
 
+## Testing with CLI Utilities
+
+Two Node.js scripts are provided in `src/` to test the broker.
+
+### Setup
+
+```bash
+npm install
+```
+
+The `.env` file containing MQTT credentials is not committed to the repository.
+Ask Nicolas for the `.env` file and place it at the project root before running the test scripts.
+
+### mqtt_server.js — Subscribe and Display Messages
+
+Connects as the `backend` user, subscribes to `climato/#`, and prints every incoming message. Runs until Ctrl+C.
+
+```bash
+node src/mqtt_server.js
+```
+
+### mqtt_client.js — Publish a Test Message
+
+Connects as a station user and publishes a single JSON payload with random weather data.
+
+```bash
+node src/mqtt_client.js <station_id>
+```
+
+Example:
+
+```bash
+node src/mqtt_client.js station
+```
+
+Publishes to `climato/station/data`:
+
+```json
+{"station_id":"station","timestamp":"2026-03-03T10:45:00.000Z","temperature":25.3,"humidity":72.1,"pressure":1018.4}
+```
+
 ## Deploying Changes
 
 After committing your changes locally, push to Clever Cloud:
