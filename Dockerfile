@@ -7,6 +7,9 @@ COPY mosquitto/mosquitto.conf /mosquitto/config/mosquitto.conf
 COPY mosquitto/acl.conf /mosquitto/config/acl.conf
 COPY mosquitto/entrypoint.sh /entrypoint.sh
 
+# Install busybox-extras for httpd (health check server)
+RUN apk add --no-cache busybox-extras
+
 # Set up permissions and directories
 RUN chmod +x /entrypoint.sh \
     && mkdir -p /mosquitto/data /mosquitto/log \
