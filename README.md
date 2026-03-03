@@ -58,27 +58,23 @@ clever create -t docker "bd_climato::MQTT" \
   --region par
 ```
 
-> If colons are rejected in the name, use `bd_climato--MQTT` instead and rename
-> it in the Clever Cloud console afterwards.
-
 ### Step 4 — Set Environment Variables
 
 ```bash
 # Define MQTT users (stations + backend)
-clever env set MQTT_USERS "station01:CHANGE_ME_1,station02:CHANGE_ME_2,backend:CHANGE_ME_BACKEND"
+# In future we'll create a login for each station
+clever env set MQTT_USERS "station:ILoveMeteor_974,backend:Meteor@974?"
 
 # Tell Clever Cloud which port is used for MQTT TCP traffic
 clever env set CC_DOCKER_EXPOSED_TCP_PORT "4040"
 ```
-
-Replace `CHANGE_ME_*` with strong passwords.
 
 ### Step 5 — Enable TCP Redirection
 
 MQTT uses raw TCP, not HTTP. Clever Cloud needs a TCP redirection to expose the broker:
 
 ```bash
-clever tcp-redirection add --namespace cleverapps
+clever tcp-redirs add --namespace cleverapps
 ```
 
 ### Step 6 — Deploy
@@ -92,7 +88,7 @@ clever deploy
 ### Step 7 — Get the Assigned MQTT Port
 
 ```bash
-clever tcp-redirection list
+clever tcp-redirs list
 ```
 
 Output example:

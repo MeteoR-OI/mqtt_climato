@@ -67,7 +67,7 @@ clever env set CC_DOCKER_EXPOSED_TCP_PORT "4040"
 ### 5. Enable TCP Redirection (required for MQTT)
 
 ```bash
-clever tcp-redirection add --namespace cleverapps
+clever tcp-redirs add --namespace cleverapps
 ```
 
 ### 6. Deploy
@@ -81,7 +81,7 @@ clever deploy
 ### 7. Get the Assigned MQTT Port
 
 ```bash
-clever tcp-redirection list
+clever tcp-redirs list
 ```
 
 Returns something like:
