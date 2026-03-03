@@ -29,5 +29,9 @@ else
     echo "WARNING: MQTT_USERS not set. No clients will be able to authenticate."
 fi
 
+# --- Fix file permissions (Mosquitto 2.1+ warns about world-readable files) ---
+chmod 0700 "$PASSWD_FILE"
+chmod 0700 /mosquitto/config/acl.conf
+
 echo "Starting Mosquitto MQTT broker on port 4040..."
 exec mosquitto -c /mosquitto/config/mosquitto.conf
