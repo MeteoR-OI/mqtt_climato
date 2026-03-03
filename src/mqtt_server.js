@@ -14,6 +14,8 @@ const client = mqtt.connect(`mqtt://${host}:${port}`, {
   password,
   protocolVersion: 5,
   connectTimeout: 10000,
+  clientId: "climato-backend",
+  clean: false,
 });
 
 client.on("connect", (connack) => {
