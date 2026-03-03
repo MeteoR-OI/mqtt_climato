@@ -44,7 +44,8 @@ client.on("message", (topic, message) => {
   console.log(`[${timestamp}] ${topic}`);
   try {
     const data = JSON.parse(message.toString());
-    console.log(JSON.stringify(data, null, 2));
+    const poste = topic.split("/")[1];
+    console.log(`Data from station '${poste}': ${JSON.stringify(data, null, 2)}`);
   } catch {
     console.log(message.toString());
   }

@@ -189,6 +189,7 @@ node src/mqtt_server.js
 ### mqtt_client.js — Publish a Test Message
 
 Connects as a station user and publishes a single JSON payload with random weather data.
+The message will be kept in queue if the server is not online
 
 ```bash
 node src/mqtt_client.js <station_id>
