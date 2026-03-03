@@ -165,6 +165,28 @@ The password file is regenerated on each startup from this variable.
 | `climato/{station_id}/data` | Station -> Broker | Station publishes sensor readings |
 | `climato/#` | Broker -> Backend | Backend subscribes to all station data |
 
+## Deploying Changes
+
+After committing your changes locally, push to Clever Cloud:
+
+```bash
+clever deploy
+```
+
+This triggers a full rebuild of the Docker image and restarts the broker.
+
+To monitor the deployment:
+
+```bash
+clever logs --follow
+```
+
+If deployment fails, check the logs for errors. To force a redeploy without new commits:
+
+```bash
+clever restart
+```
+
 ## Notes
 
 - **Health check**: Clever Cloud requires HTTP 200 on port 8080. A lightweight BusyBox `httpd` serves this automatically.
