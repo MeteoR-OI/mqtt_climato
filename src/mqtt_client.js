@@ -1,10 +1,12 @@
 const mqtt = require("mqtt");
+const pino = require("pino");
 require("dotenv").config();
+
+const logger = pino({ level: process.env.LOG_LEVEL || "info" });
 
 const stationId = process.argv[2] || process.env.MQTT_STATION_USER;
 if (!stationId) {
-  console.error("Usage: node src/mqtt_client.js [station_id]");
-  console.error("Defaults to MQTT_STATION_USER from .env if no argument given");
+  logger.error("Usage: node src/mqtt_client.js [station_id] (defaults to MQTT_STATION_USER)");
   process.exit(1);
 }
 
@@ -14,7 +16,7 @@ const username = process.env.MQTT_STATION_USER;
 const password = process.env.MQTT_STATION_PASS;
 const topic = `climato/${stationId}/data`;
 
-console.log(`Connecting to mqtt://${host}:${port} as '${username}'...`);
+logger.info({ host, port, username }, "connecting to mqtt broker");
 
 const client = mqtt.connect(`mqtt://${host}:${port}`, {
   username,
@@ -24,7 +26,7 @@ const client = mqtt.connect(`mqtt://${host}:${port}`, {
 });
 
 client.on("connect", (connack) => {
-  console.log(`Connected (reason: ${connack.reasonCode})`);
+  logger.info({ reasonCode: connack.reasonCode }, "connected");
 
   const payload = JSON.stringify({
     station_id: stationId,
@@ -36,20 +38,19 @@ client.on("connect", (connack) => {
 
   client.publish(topic, payload, { qos: 1 }, (err) => {
     if (err) {
-      console.error("Publish error:", err.message);
+      logger.error({ err: err.message }, "publish error");
     } else {
-      console.log(`Published to ${topic}:`);
-      console.log(payload);
+      logger.info({ topic, payload }, "published");
     }
     client.end();
   });
 });
 
 client.on("error", (err) => {
-  console.error("Error:", err.message);
+  logger.error({ err: err.message }, "mqtt error");
   process.exit(1);
 });
 
 client.on("disconnect", (packet) => {
-  console.error("Disconnected by broker, reason:", packet.reasonCode);
+  logger.warn({ reasonCode: packet.reasonCode }, "disconnected by broker");
 });

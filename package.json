@@ -4,6 +4,7 @@
   "description": "Mosquitto MQTT broker for weather station data collection, deployed as a Docker application on Clever Cloud.",
   "main": "index.js",
   "scripts": {
+    "metrics": "node src/metrics_server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,6 +21,8 @@
   "homepage": "https://github.com/MeteoR-OI/mqtt_climato#readme",
   "dependencies": {
     "dotenv": "^17.3.1",
-    "mqtt": "^5.15.0"
+    "mqtt": "^5.15.0",
+    "pino": "^10.3.1",
+    "prom-client": "^15.1.3"
   }
 }

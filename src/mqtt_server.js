@@ -1,5 +1,8 @@
 const mqtt = require("mqtt");
+const pino = require("pino");
 require("dotenv").config();
+
+const logger = pino({ level: process.env.LOG_LEVEL || "info" });
 
 const host = process.env.MQTT_HOST;
 const port = process.env.MQTT_PORT;
@@ -7,7 +10,7 @@ const username = process.env.MQTT_BACKEND_USER;
 const password = process.env.MQTT_BACKEND_PASS;
 const topic = "climato/#";
 
-console.log(`Connecting to mqtt://${host}:${port} as '${username}'...`);
+logger.info({ host, port, username }, "connecting to mqtt broker");
 
 const client = mqtt.connect(`mqtt://${host}:${port}`, {
   username,
@@ -22,54 +25,50 @@ const client = mqtt.connect(`mqtt://${host}:${port}`, {
 });
 
 client.on("connect", (connack) => {
-  console.log(`Connected (reason: ${connack.reasonCode})`);
+  logger.info({ reasonCode: connack.reasonCode }, "connected");
 
   client.subscribe(topic, { qos: 1 }, (err, granted) => {
     if (err) {
-      console.error("Subscribe error:", err.message);
+      logger.error({ err: err.message }, "subscribe error");
       process.exit(1);
     }
     const result = granted[0];
     if (result.qos === 128) {
-      console.error("Subscription refused by broker (ACL denied or topic invalid)");
+      logger.error({ topic }, "subscription refused by broker (ACL denied or topic invalid)");
       process.exit(1);
     }
-    console.log(`Subscribed to ${topic} (granted QoS ${result.qos})`);
-    console.log("Waiting for messages... (Ctrl+C to stop)\n");
+    logger.info({ topic, qos: result.qos }, "subscribed");
   });
 });
 
 client.on("message", (topic, message) => {
-  const timestamp = new Date().toISOString();
-  console.log(`[${timestamp}] ${topic}`);
+  const poste = topic.split("/")[1];
   try {
     const data = JSON.parse(message.toString());
-    const poste = topic.split("/")[1];
-    console.log(`Data from station '${poste}': ${JSON.stringify(data, null, 2)}`);
+    logger.info({ topic, station: poste, data }, "message received");
   } catch {
-    console.log(message.toString());
+    logger.info({ topic, station: poste, raw: message.toString() }, "message received (non-json)");
   }
-  console.log("---");
 });
 
 client.on("error", (err) => {
-  console.error("Error:", err.message);
+  logger.error({ err: err.message }, "mqtt error");
   process.exit(1);
 });
 
 client.on("disconnect", (packet) => {
-  console.error("Disconnected by broker, reason:", packet.reasonCode);
+  logger.warn({ reasonCode: packet.reasonCode }, "disconnected by broker");
 });
 
 client.on("offline", () => {
-  console.error("Client went offline");
+  logger.warn("client went offline");
 });
 
 client.on("reconnect", () => {
-  console.log("Reconnecting...");
+  logger.info("reconnecting");
 });
 
 process.on("SIGINT", () => {
-  console.log("\nDisconnecting...");
+  logger.info("disconnecting");
   client.end(false, () => process.exit(0));
 });
