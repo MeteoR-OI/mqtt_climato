@@ -150,6 +150,9 @@ const server = http.createServer(async (req, res) => {
     } else if (req.url === "/" || req.url === "/health") {
       res.writeHead(200, { "Content-Type": "text/plain" });
       res.end("OK");
+    } else if (req.url === "/refreshCache" && req.method === "POST") {
+      res.writeHead(200, { "Content-Type": "text/plain" });
+      res.end("OK");
     } else {
       res.writeHead(404, { "Content-Type": "text/plain" });
       res.end("Not Found");
